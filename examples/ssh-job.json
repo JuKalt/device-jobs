@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "shared_run_root": "/shared/runs/hello",
+  "output_root": "/shared/outputs/hello",
+  "subjects": ["sample-a", "sample-b"],
+  "source": {
+    "root": "/opt/controller/device-jobs",
+    "include": ["examples/hello.py"]
+  },
+  "max_attempts": 2,
+  "task": {
+    "command": ["{python}", "examples/hello.py", "{subject}", "{output_dir}"],
+    "timeout_seconds": 120
+  },
+  "machines": [
+    {
+      "name": "gpu-worker-a",
+      "host": "gpu-worker-a.example.org",
+      "user": "runner",
+      "transport": "ssh",
+      "cwd": "/opt/worker/hello-job",
+      "bootstrap_python": "/usr/bin/python3",
+      "python": "/usr/bin/python3",
+      "gpus": [{"id": 0, "workers": 1}]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "shared_run_root": "/data/runs/device-jobs",
+  "output_root": "/data/outputs/device-jobs",
+  "subjects": [
+    "example-subject"
+  ],
+  "task": {
+    "command": [
+      "{python}",
+      "examples/hello.py",
+      "{subject}",
+      "{output_dir}"
+    ],
+    "output_layout": "subject"
+  },
+  "machines": [
+    {
+      "name": "local",
+      "host": "localhost",
+      "transport": "local",
+      "cwd": "/opt/device-jobs",
+      "python": "python3",
+      "gpus": [
+        {
+          "id": 0,
+          "workers": 1
+        }
+      ]
+    }
+  ]
+}

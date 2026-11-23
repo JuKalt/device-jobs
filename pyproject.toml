@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "device-jobs"
+version = "0.1.0"
+description = "Run independent jobs across Linux GPU machines"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+device-jobs = "device_jobs.controller:main"
+
+[tool.setuptools.packages.find]
+include = ["device_jobs*"]

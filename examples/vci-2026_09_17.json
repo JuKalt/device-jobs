@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "shared_run_root": "/shared/vci/runs/2026_09_17",
+  "output_root": "/shared/vci/processed/2026_09_17",
+  "subjects": ["example-subject-01", "example-subject-02"],
+  "busy_memory_fraction": 0.1,
+  "poll_seconds": 10,
+  "lease_seconds": 180,
+  "ssh_timeout_seconds": 20,
+  "max_attempts": 3,
+  "task": {
+    "command": [
+      "{python}",
+      "scripts/datasets/process_vci_subject.py",
+      "{raw_root}",
+      "{subject}",
+      "{output_dir}",
+      "--",
+      "--dataset-kind", "vci",
+      "--smplx-source", "mamma",
+      "--mamma-python", "{mamma_python}",
+      "--mhr-source", "sam3d-body-rerun",
+      "--mhr-python", "{mhr_python}",
+      "--workers", "{transcode_workers}",
+      "--mamma-workers", "{mamma_workers}",
+      "--mhr-workers", "{mhr_workers}",
+      "--resume-validation", "full"
+    ],
+    "params": {
+      "raw_root": "/shared/vci/raw/2026_09_17",
+      "mamma_python": "conda run -n mamma python",
+      "transcode_workers": 4,
+      "mamma_workers": 4,
+      "mhr_workers": 1
+    },
+    "env": {
+      "PATH": "{conda_root}/bin:/usr/local/bin:/usr/bin:/bin"
+    },
+    "output_layout": "root"
+  },
+  "machines": [
+    {
+      "name": "controller-gpu",
+      "host": "localhost",
+      "transport": "local",
+      "cwd": "/opt/vci-suite/capture-processing",
+      "bootstrap_python": "/usr/bin/python3",
+      "python": "/opt/miniforge/envs/vci-dataset/bin/python",
+      "params": {
+        "conda_root": "/opt/miniforge",
+        "mhr_python": "/opt/vci-suite/capture-processing/external/sam3d-body-rerun/.pixi/envs/dev/bin/python"
+      },
+      "gpus": [{"id": 0, "workers": 1}]
+    },
+    {
+      "name": "gpu-worker-a",
+      "host": "gpu-worker-a.example.org",
+      "user": "runner",
+      "transport": "ssh",
+      "cwd": "/srv/vci-suite/capture-processing",
+      "bootstrap_python": "/usr/bin/python3",
+      "python": "/srv/miniforge/envs/vci-dataset/bin/python",
+      "params": {
+        "conda_root": "/srv/miniforge",
+        "mhr_python": "/srv/vci-suite/capture-processing/external/sam3d-body-rerun/.pixi/envs/dev/bin/python",
+        "transcode_workers": 8
+      },
+      "gpus": [
+        {"id": 0, "workers": 1},
+        {"id": 1, "workers": 1, "params": {"mamma_workers": 2}}
+      ]
+    }
+  ]
+}
